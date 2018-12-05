@@ -3,16 +3,16 @@ package com.microsoft.azure.featureflag.controller.client;
 import java.util.Map;
 
 public class UserContract {
-  private String userName;
-  private String email;
-  private Map<String, String> attributes;
+  public String id;
+  public String email;
+  public Map<String, String> attributes;
 
-  public String getUserName() {
-    return userName;
+  public String getId() {
+    return id;
   }
 
-  public void setUserName(String userName) {
-    this.userName = userName;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getEmail() {

@@ -4,14 +4,14 @@ package com.microsoft.azure.featureflag.repository;
 import java.util.List;
 
 public class EnvEntity {
-    private String enabled;
+    private Boolean enabled;
     private List<RuleEntity> rules;
 
-    public String getEnabled() {
+    public Boolean getEnabled() {
         return enabled;
     }
 
-    public void setEnabled(String enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 

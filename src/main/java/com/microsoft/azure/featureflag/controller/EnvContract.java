@@ -3,14 +3,14 @@ package com.microsoft.azure.featureflag.controller;
 import java.util.List;
 
 public class EnvContract {
-  private String enabled;
+  private Boolean enabled;
   private List<RuleContract> rules;
 
-  public String getEnabled() {
+  public Boolean getEnabled() {
     return enabled;
   }
 
-  public void setEnabled(String enabled) {
+  public void setEnabled(Boolean enabled) {
     this.enabled = enabled;
   }
 

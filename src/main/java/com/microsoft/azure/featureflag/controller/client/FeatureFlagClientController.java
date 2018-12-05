@@ -1,9 +1,11 @@
 package com.microsoft.azure.featureflag.controller.client;
 
 import com.microsoft.azure.featureflag.controller.FeatureFlagContract;
+import com.microsoft.azure.featureflag.service.FeatureFlagClientService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController public class FeatureFlagClientController {
   private static Logger LOGGER = LoggerFactory.getLogger(FeatureFlagClientController.class);
 
+  @Autowired
+  private FeatureFlagClientService featureFlagClientService;
+
   @RequestMapping(value = "/client/featureflags/{featureFlagKey}/variation", method = RequestMethod.PUT, produces =
       MediaType
       .APPLICATION_JSON_VALUE)
@@ -27,10 +32,8 @@ import org.springframework.web.bind.annotation.RestController;
         featureFlagKey,
         userContract,
         env);
-    FeatureFlagContract featureFlagContract = null;
-    String variation = null;
+    String variation = featureFlagClientService.findVariation(featureFlagKey, userContract, env);
     LOGGER.info("Evaluated variation: {}", variation);
     return ResponseEntity.ok(variation);
   }
 }
-
