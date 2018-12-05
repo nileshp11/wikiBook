@@ -36,6 +36,24 @@ public class FeatureFlagEntityTranslator extends BaseTranslator<FeatureFlagContr
     }
 
 
+    @Override
+    public FeatureFlagContract translateFrom(FeatureFlagEntity featureFlagEntity) {
+        FeatureFlagContract featureFlagContract = new FeatureFlagContract();
+        featureFlagContract.setName(featureFlagEntity.getName());
+        featureFlagContract.setVariations(featureFlagEntity.getVariations());
+        featureFlagContract.setEnabled(featureFlagEntity.getEnabled());
+        Map<String, EnvEntity> environmentMap = featureFlagEntity.getEnvs();
+        Map<String, EnvContract> envrionmentContractMap = new HashMap<>();
+        environmentMap.keySet().forEach(envrionmentKey ->{
+            envrionmentContractMap.put(envrionmentKey,ENV_ENTITY_TRANSLATOR.translateFrom(environmentMap.get(envrionmentKey)));
+        });
+        featureFlagContract.setDefaultVariation(featureFlagEntity.getDefaultVariation());
+        featureFlagContract.setEnvs(envrionmentContractMap);
+        featureFlagContract.setKey(featureFlagEntity.getKey());
+        return featureFlagContract;
+    }
+
+
     private class EnvEntityTranslator extends BaseTranslator<EnvContract, EnvEntity> {
 
         @Override
@@ -44,6 +62,14 @@ public class FeatureFlagEntityTranslator extends BaseTranslator<FeatureFlagContr
             envEntity.setEnabled(envContract.getEnabled());
             envEntity.setRules(RULES_ENTITY_TRANSLATOR.translateTo(envContract.getRules()));
             return envEntity;
+        }
+
+        @Override
+        public EnvContract translateFrom(EnvEntity envEntity) {
+            EnvContract envContract = new EnvContract();
+            envContract.setEnabled(envEntity.getEnabled());
+            envContract.setRules(RULES_ENTITY_TRANSLATOR.translateFrom(envEntity.getRules()));
+            return envContract;
         }
     }
 
@@ -64,6 +90,21 @@ public class FeatureFlagEntityTranslator extends BaseTranslator<FeatureFlagContr
             ruleEntity.setClauses(listOfListPredicateEntity);
             return ruleEntity;
         }
+
+        @Override
+        public RuleContract translateFrom(RuleEntity ruleEntity) {
+            RuleContract ruleContract = new RuleContract();
+            List<List<PredicateEntity>> listOfListPredicateEntity = ruleEntity.getClauses();
+            List<List<PredicateContract>> listOfListPredicateContract = new ArrayList<>();
+            if (!CollectionUtils.isEmpty(listOfListPredicateEntity)) {
+                listOfListPredicateEntity.forEach(listPredicateEntity -> {
+                    listOfListPredicateContract.add(PREDICATE_ENTITY_TRANSLATOR.translateFrom(listPredicateEntity));
+                });
+            }
+            ruleContract.setVariation(ruleEntity.getVariation());
+            ruleContract.setClauses(listOfListPredicateContract);
+            return ruleContract;
+        }
     }
 
 
@@ -74,6 +115,14 @@ public class FeatureFlagEntityTranslator extends BaseTranslator<FeatureFlagContr
             predicateEntity.setKeyToMatch(predicateContract.getKeyToMatch());
             predicateEntity.setValueToMatch(predicateContract.getValueToMatch());
             return predicateEntity;
+        }
+
+        @Override
+        public PredicateContract translateFrom(PredicateEntity predicateEntity) {
+            PredicateContract predicateContract = new PredicateContract();
+            predicateContract.setKeyToMatch(predicateEntity.getKeyToMatch());
+            predicateContract.setValueToMatch(predicateEntity.getValueToMatch());
+            return predicateContract;
         }
     }
 

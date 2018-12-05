@@ -31,7 +31,7 @@ import java.util.List;
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void updateFeatureFlag(@RequestBody FeatureFlagContract featureFlagContract) {
     LOGGER.info("Received featureFlagContract: {}", featureFlagContract);
-    featureFlagAdminService.SaveFetureFlag(featureFlagContract);
+    featureFlagAdminService.saveFeatureFlag(featureFlagContract);
     return;
   }
 
@@ -43,6 +43,7 @@ import java.util.List;
     LOGGER.info("Received request to get all feature flags");
     List<FeatureFlagContract> featureFlagContracts = null;
     LOGGER.info("Fetched feature flag: {}", featureFlagContracts);
+    featureFlagContracts = featureFlagAdminService.getAllFeatureFlags();
     return ResponseEntity.ok(featureFlagContracts);
   }
 
