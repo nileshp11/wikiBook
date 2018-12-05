@@ -32,44 +32,52 @@ import java.util.regex.Pattern;
   private FeatureFlagEntityTranslator FEATURE_FLAG_ENTITY_TRANSLATOR = new FeatureFlagEntityTranslator();
 
   public String findVariation(String featureFlagKey, UserContract userContract, String env) {
-    String matchedVariation = null;
     FeatureFlagContract featureFlagContract = getFeatureFlag(featureFlagKey);
     if (featureFlagContract == null) {
-      return matchedVariation;
+      throw new IllegalStateException("Could not find feature-flag for key: " + featureFlagKey);
     }
 
+    String defaultVariation = featureFlagContract.getDefaultVariation();
+    if (StringUtils.isBlank(defaultVariation)) {
+      throw new IllegalStateException("Default variation cannot be blank for feature-flag: " + featureFlagKey);
+    }
+    
     if (!featureFlagContract.getEnabled()) {
-      return featureFlagContract.getDefaultVariation();
+      return defaultVariation;
     }
 
     Map<String, EnvContract> envs = featureFlagContract.getEnvs();
     if (envs == null || envs.size() == 0 || !envs.containsKey(env)) {
-      return matchedVariation;
+      return defaultVariation;
     }
 
     EnvContract envContract = envs.get(env);
     if (!envContract.getEnabled()) {
-      return matchedVariation;
+      return defaultVariation;
     }
 
     List<RuleContract> ruleContracts = envContract.getRules();
     if (CollectionUtils.isEmpty(ruleContracts)) {
-      return matchedVariation;
+      return defaultVariation;
     }
     for (RuleContract ruleContract : ruleContracts) {
-      matchedVariation = ruleContract.getVariation();
-      if (evaluateListOfOrs(userContract, ruleContract.getClauses())) {
-        return matchedVariation;
+      String variationToMatch = ruleContract.getVariation();
+      if (evaluateListOfOrs(ruleContract.getClauses(), userContract)) {
+        return variationToMatch;
       }
     }
 
-    return matchedVariation;
+    return defaultVariation;
   }
 
-  private boolean evaluateListOfOrs(UserContract userContract, List<List<PredicateContract>> listOfOrs) {
+  private boolean evaluateListOfOrs(List<List<PredicateContract>> listOfOrs, UserContract userContract) {
     boolean result = false;
+    if (CollectionUtils.isEmpty(listOfOrs)) {
+      return result;
+    }
+
     for (List<PredicateContract> listOfAnds : listOfOrs) {
-      result = result || evaluateListOfAnds(userContract, listOfAnds);
+      result = result || evaluateListOfAnds(listOfAnds, userContract);
       if (result) {
         return result;
       }
@@ -77,10 +85,14 @@ import java.util.regex.Pattern;
     return result;
   }
 
-  private boolean evaluateListOfAnds(UserContract userContract, List<PredicateContract> listOfAnds) {
+  private boolean evaluateListOfAnds(List<PredicateContract> listOfAnds, UserContract userContract) {
     boolean result = true;
+    if (CollectionUtils.isEmpty(listOfAnds)) {
+      return false;
+    }
+
     for (PredicateContract predicateContract : listOfAnds) {
-      result = result && evaluatePredicate(userContract, predicateContract);
+      result = result && evaluatePredicate(predicateContract, userContract);
       if (!result) {
         return result;
       }
@@ -88,19 +100,23 @@ import java.util.regex.Pattern;
     return result;
   }
 
-  private boolean evaluatePredicate(UserContract userContract, PredicateContract predicateContract) {
+  private boolean evaluatePredicate(PredicateContract predicateContract, UserContract userContract) {
     String keyToMatch = predicateContract.getKeyToMatch();
     String valueToMatch = predicateContract.getValueToMatch();
     Pattern patternToMatch = Pattern.compile(valueToMatch);
 
     for (Field userField : USER_FIELDS) {
       String userFieldName = userField.getName();
-      if (userFieldName.equalsIgnoreCase(keyToMatch)) {
+      if (userFieldName.equals(keyToMatch)) {
         String userFieldValue = null;
         try {
           userFieldValue = (String) userField.get(userContract);
         } catch (IllegalAccessException e) {
           LOGGER.error("Could not access field {} of userContract: {}", userFieldName, userContract);
+          throw new IllegalStateException("Could not access field "
+              + userFieldName
+              + " of userContract: "
+              + userContract);
         }
 
         if (StringUtils.isBlank(userFieldValue)) {
