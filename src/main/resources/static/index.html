@@ -11,7 +11,9 @@
         #todolist button { margin-left: 5px; }
     </style>
 </head>
-<body ng-app="todoApp" ng-controller="homeCtrl" role="document">
+
+
+<body ng-app="wikiBookApp" ng-controller="homeCtrl" role="document">
 <nav class="navbar fixed-top navbar-expand-sm navbar-dark bg-dark">
     <div class="container">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navBarToggler" aria-controls="navBarToggler" aria-expanded="false" aria-label="Azure Spring Boot Sample">
@@ -21,7 +23,7 @@
             <a class="navbar-brand" href="#/Home">Todo List Java on Azure</a>
             <ul class="navbar-nav">
                 <li ng-class="{ active: isActive('/Home') }"><a class="nav-link" href="#/Home">Home</a></li>
-                <li ng-class="{ active: isActive('/TodoList') }"><a class="nav-link" href="#/TodoList">Todo List</a></li>
+                <li ng-class="{ active: isActive('/bookLink') }"><a class="nav-link" href="#/bookLink">Book Link</a></li>
             </ul>
         </div>
     </div>
@@ -32,13 +34,16 @@
 </div>
 </div>
 </body>
+
+
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
 <script src="https://code.angularjs.org/1.2.25/angular-route.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
-<script src="Scripts/app.js"></script>
-<script src="Scripts/homeCtrl.js"></script>
-<script src="Scripts/todoListCtrl.js"></script>
-<script src="Scripts/todoListSvc.js"></script>
+<script src="Scripts/WikiBook/wikiBookApp.js"></script>
+<script src="Scripts/WikiBook/BookLink/bookLinkCtrl.js"></script>
+<script src="Scripts/WikiBook/BookLink/bookLinkSvc.js"></script>
+<script src="Scripts/WikiBook/BookLink/homeCtrl.js"></script>
 </html>

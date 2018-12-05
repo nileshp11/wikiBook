@@ -1,0 +1,13 @@
+<div class="panel">
+    <div class="input-group" style="margin-bottom: 20px !important;">
+        <input type="text" placeholder = "title"  ng-model="editInProgressLink.title" ng-change="editInProgressLink.title = editInProgressLink.title.toLowerCase()" class="form-control"/>
+        <input type="text" placeholder = "wikiLink" ng-model="editInProgressLink.wikiLink" ng-change="editInProgressLink.wikiLink = editInProgressLink.wikiLink.toLowerCase()" class="form-control"/>
+        <input type="text" placeholder = "youtubeLink" ng-model="editInProgressLink.youtubeLink" ng-change="editInProgressLink.youtubeLink = editInProgressLink.youtubeLink.toLowerCase()" class="form-control"/>
+        <input type="text" placeholder = "externalLink" ng-model="editInProgressLink.externalLink" ng-change="editInProgressLink.externalLink = editInProgressLink.externalLink.toLowerCase()" class="form-control"/>
+        <input type="text" placeholder = "subject" ng-model="editInProgressLink.subject" ng-change="editInProgressLink.subject = editInProgressLink.subject.toLowerCase()" class="form-control"/>
+        <input type="text" placeholder = "context" ng-model="editInProgressLink.context" ng-change="editInProgressLink.context = editInProgressLink.context.toLowerCase()" class="form-control"/>
+        <span class="input-group-btn">
+                <button ng-click="saveBookLinkItem()" class="btn btn-primary">Add</button>
+        </span>
+    </div>
+</div>
