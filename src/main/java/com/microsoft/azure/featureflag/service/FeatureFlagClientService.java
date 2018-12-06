@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
     if (StringUtils.isBlank(defaultVariation)) {
       throw new IllegalStateException("Default variation cannot be blank for feature-flag: " + featureFlagKey);
     }
-    
+
     if (!featureFlagContract.getEnabled()) {
       return defaultVariation;
     }
